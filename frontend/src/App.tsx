@@ -1,34 +1,36 @@
-import { useState, useEffect, useRef } from "react";
 import "./App.css";
+import { useState, useEffect, useRef } from "react";
+
+// shadcn/ui
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 
-function App() {
-  type Movie = {
-    id: number;
-    title: string;
-    release_date: string;
-    vote_average: number;
-    backdrop_path: string;
-    youtubeId: string;
-    streamingProvider: string;
-  };
+// my components
+import AvatarDemo from "@/parts/avatar";
+import LoginCard from "@/parts/loginCard";
+import MovieCard from "@/parts/MovieCard";
 
-  //Initializes movies as an empty array. setMovies is the function used to update it.
-  const [movies, setMovies] = useState<Movie[]>([]); // State to hold the list of movies
-  const [loading, setLoading] = useState(true); //for initial page load
-  const playerRefs = useRef<{ [key: number]: any | null }>({});
+// hooks
+import { useYouTubePlayers } from "@/hooks/useYoutubePlayer";
+import { useMovieLoader } from "@/hooks/useMovieLoader";
+import { useInfiniteScroll } from "./hooks/useInfiniteScroll";
+
+function App() {
+  const { movies, setMovies, fetchAndAddMovie } = useMovieLoader(); // Loads and manages the movie list (initial + incremental loading)
+  const [loading, setLoading] = useState(true); // Controls the loading state for the initial movie grid (the initial 8 movies)
+  const playerRefs = useYouTubePlayers(movies, loading); // Initializes and stores references to YouTube players using movie IDs
+  const [showLogin, setShowLogin] = useState(false); // Controls whether the login popup is visible
+  const [searchQuery, setSearchQuery] = useState(""); // Tracks the input text for the search
+  const [loadingMovies, setLoadingMovies] = useState(false); // Controls whether movies are loading after input query
 
   // Load trending movies initially
   useEffect(() => {
     fetch("http://localhost:5050/api/trending")
       .then((res) => res.json())
       .then((data) => {
-        setMovies(data);
-        setLoading(false);
-        console.log("Trending movies loaded");
-        console.log(data);
+        setMovies(data); // once the movies are fetched
+        setLoading(false); // no longer show the loading state
       })
       .catch((err) => {
         console.error("Error loading trending movies:", err);
@@ -36,85 +38,73 @@ function App() {
       });
   }, []);
 
-  //Create YouTube Player for each movie
-  const createPlayer = (movieId: number, youtubeId: string) => {
-    const player = new (window as any).YT.Player(`player${movieId}`, {
-      videoId: youtubeId,
-      playerVars: {
-        controls: 0,
-        rel: 0,
-        start: 10,
-        mute: 0, // autoplay works only if muted
-        origin: window.location.origin,
-      },
-      events: {
-        onReady: (event: any) => {
-          playerRefs.current[movieId] = event.target;
-          console.log(movieId);
+  useInfiniteScroll(fetchAndAddMovie); // Attaches a scroll listener and loads a new movie from the backend when the user nears the bottom of the page.
+
+  // Function to handle search button click
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      setLoadingMovies(true); // Start loading movies
+      fetch("http://localhost:5050/api/gpt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      },
-    });
-  };
-
-  useEffect(() => {
-    //Only try to create YouTube players if the page has finished loading and the YouTube API is fully ready
-    if (!loading && (window as any).YT && (window as any).YT.Player ) {
-      movies.forEach((movie, index) => {
-        // Loop through each movie
-        createPlayer(movie.id, movie.youtubeId);   //use the movieId here instead of the index
-      });
-    }
-  }, [loading, movies]); // Whenever the loading state or movies array changes, run this code.
-
-  
-
-  // Infinite scroll functionality
-  useEffect(() => {
-    let isFetching = false;
-
-    const handleScroll = () => {
-      const scrollPosition = window.innerHeight + window.scrollY;
-      const threshold = document.body.offsetHeight - 100;
-
-      if (scrollPosition >= threshold && !isFetching) {
-        isFetching = true;
-        fetchAndAddMovie().finally(() => {
-          setTimeout(() => {
-            isFetching = false;
-          }, 500); // prevent rapid fire
+        body: JSON.stringify({ query: searchQuery }), // Send the input query to the backend
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setMovies(data); // Update the movie list with the fetched movies
+          setLoadingMovies(false); // Stop loading state
+        })
+        .catch((err) => {
+          console.error("Error fetching movies from GPT:", err);
+          setLoadingMovies(false); // Stop loading state in case of error
         });
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  //Function to add a new movie to the grid
-  //When state updates, React re-renders the component with the new list of movies.
-  const addMovies = (newMovies: Movie[]) => {
-    setMovies((prev) => [...prev, ...newMovies]);
-  };
-
-  // Fetch one random movie and add it
-  const fetchAndAddMovie = async () => {
-    try {
-      const res = await fetch("http://localhost:5050/api/one_movie"); // update route
-      const movies: Movie[] = await res.json();
-      addMovies(movies);
-    } catch (err) {
-      console.error("Error fetching movies:", err);
     }
   };
 
   return (
     <div style={{ padding: "20px" }}>
-      <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
-        <Input style={{ flex: 1 }} placeholder="Enter something..." />
-        <Button>Enter</Button>
+      <div
+        style={{ position: "absolute", top: "20px", left: "20px", zIndex: 999 }}
+      >
+        <AvatarDemo onClick={() => setShowLogin(!showLogin)} />
       </div>
 
-      {loading ? (
+      {/* Login popup: Opens or closes the login card when clicked. */}
+      {showLogin && <LoginCard />}
+
+      {/* Search Bar */}
+      <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
+        <Input
+          style={{ flex: 1, height: "50px", fontSize: "16px" }}
+          placeholder="What type of movie are you looking for ..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)} // Update the searchQuery state
+        />
+        <Button
+          style={{ height: "50px" }}
+          onClick={handleSearch} // Handle button click to trigger search
+        >
+          Enter
+        </Button>
+      </div>
+
+      {/* Movie Grid */}
+      {/* Shows loading skeletons while movies are loading. */}
+      {loadingMovies ? (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(500px, 1fr))",
+            gap: "16px",
+          }}
+        >
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} className="w-full h-[300px] rounded-xl" />
+          ))}
+        </div>
+      ) : loading ? (
         <div
           style={{
             display: "grid",
@@ -134,51 +124,14 @@ function App() {
             gap: "16px",
           }}
         >
-          {movies.map((movie, index) => (
-            <div
+          {/* Displays each movie in a MovieCard */}
+          {movies.map((movie) => (
+            <MovieCard
               key={movie.id}
-              onMouseEnter={() => playerRefs.current[movie.id]?.playVideo()}
-              onMouseLeave={() => playerRefs.current[movie.id]?.pauseVideo()}
-              style={{
-                position: "relative",
-                width: "100%",
-                aspectRatio: "16/9",
-              }}
-              className="video-wrapper"
-            >
-              <img
-                src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
-                alt={movie.title}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: "8px",
-                  objectFit: "cover",
-                  transition: "opacity 0.3s ease",
-                  zIndex: 2,
-                }}
-                className="backdrop-image"
-              />
-
-              <div
-                id={`player${movie.id}`}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  zIndex: 1,
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  pointerEvents: "auto", // Allow interaction
-                }}
-                className="youtube-player"
-              ></div>
-            </div>
+              movie={movie}
+              onHover={() => playerRefs.current[movie.id]?.playVideo()}
+              onLeave={() => playerRefs.current[movie.id]?.pauseVideo()}
+            />
           ))}
           <Skeleton className="w-full h-[300px] rounded-xl" />
         </div>
