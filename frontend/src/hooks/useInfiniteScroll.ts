@@ -1,3 +1,15 @@
+/**
+ * useInfiniteScroll Hook
+ * 
+ * This hook listens for the scroll event on the window and triggers a `fetchMore` function when the user scrolls 
+ * close to the bottom of the page.
+ *  * Props:
+ * - `fetchMore`: A function that returns a Promise, used to fetch additional data when the user reaches the threshold.
+ * - `threshold`: The distance (in pixels) from the bottom of the page to trigger the fetchMore function. Defaults to 100 pixels.
+ */
+
+
+
 import { useEffect } from "react";
 
 export function useInfiniteScroll(

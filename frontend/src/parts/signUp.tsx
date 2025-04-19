@@ -1,3 +1,18 @@
+/**
+ * SignUpForm Component
+ * 
+ * This component allows users to sign up by entering their name, email, and password.
+ * It calls the `signUp` function from the `useAuth` hook to handle the registration process.
+ * 
+ * - Handles form submission and error states.
+ * - Displays loading state during the sign-up process.
+ * - Sets the logged-in user on successful sign-up.
+ * - Handles error messages on sign-up failure.
+ * 
+ *  Props: `setLoggedInUser`: A function to set the logged-in user data in the parent component.
+ */
+
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -7,10 +22,11 @@ import { useAuth } from "@/hooks/useAuth";
 export default function SignUpForm({
   setLoggedInUser,
 }: {
-  setLoggedInUser: (user: { email: string; image?: string }) => void;
+  setLoggedInUser: (user: { email: string; image: string }) => void;
 }) {
   const { signUp } = useAuth();
 
+  // State to manage the form inputs
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,17 +39,21 @@ export default function SignUpForm({
     setError(null); // Reset error state before attempting sign-up
 
     try {
-      const success = await signUp(email, password, name);
+      const errorMessage = await signUp(email, password, name); // Call signUp and capture any error message
 
-      if (success) {
-        // Once successful, set the logged-in user and trigger the display of LoggedInCard
-        setLoggedInUser({ email, image: "https://github.com/shadcn.png" }); // Customize image URL if needed
+      if (errorMessage) {
+        setError(errorMessage); // Set the error message if there's an error
       } else {
-        setError("Sign up failed. Please try again."); // Set error message if sign-up fails
+        // If no error, set the logged-in user
+        setLoggedInUser({
+          email,
+          image:
+            "https://moviesitebucket.nyc3.cdn.digitaloceanspaces.com/Sample_User_Icon.png", //default image
+        });
       }
     } catch (err) {
       console.error("Sign up error:", err);
-      setError("An error occurred. Please try again."); // Set error message in case of an error
+      setError("An error occurred. Please try again."); // Set error message in case of an unexpected error
     }
 
     setIsLoading(false);
@@ -48,7 +68,7 @@ export default function SignUpForm({
           <Input
             id="name"
             type="text"
-            placeholder="John Doe"
+            placeholder="Example Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
