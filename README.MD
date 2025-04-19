@@ -34,7 +34,7 @@ In the backend we store user profile images using DigitalOcean.
 In the backend we generate new recommendation using a SQLite database.                                   
 
 In the backend we use the TMDB API to fetch movie details, including poster images.                                  
-In the backed we use GPT  movie search bar for intelligent search capabilities.                                  
+In the backed we use GPT API for intelligent search capabilities.                                  
 
 We implement user authentication and authorization use Better Auth.                                   
 We store the user information in a SQLite database.                                   
