@@ -1,4 +1,8 @@
 # Movie Website
+This project is a movie recommendation and search platform that integrates various APIs to provide users with an interactive experience. It features a dynamic movie panel with trailers, a GPT-powered search bar, and secure user authentication. Note that you cannot run this project without setting API keys for GPT and TMDB in the .env file.
+
+## Video Demo
+A demo of the final project is available here: https://drive.google.com/file/d/1O_pKABgfuIRA60Lgws_zUn3IYdatr-Th/view?usp=sharing or https://youtu.be/An-lNnwJfJM . 
 
 ## Team Information: 
 One student worked on this project.                                   
