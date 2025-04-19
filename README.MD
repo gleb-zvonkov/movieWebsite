@@ -32,7 +32,7 @@ In the frontend we use the YouTube API to display movie trailers.
 In the backend we store user profile images using DigitalOcean.                                  
 In the backend we generate new recommendation using a SQLite database.                                   
 
-In the backend we use the TMDB API to fetch movie details.
+In the backend we use the TMDB API to fetch movie details.               
 In the backed we use GPT API for intelligent search capabilities.                                  
 
 We implement user authentication and authorization use Better Auth.                                   
@@ -49,7 +49,7 @@ We describe who they fulfill course requirments:
 - Backend: Express.js server handles backend functionality.                                  
 - User Authentication and Authorization: Implemented using Better-Auth.                                  
 - Cloud Storage: User profile images stored using DigitalOcean.                                  
-- API Integration with External Services: We integrate with TMDB, GPT, and YouTube APIs. 
+- External Services API: We integrate with TMDB, GPT, and YouTube APIs. 
 
 
 ## User Guide 
@@ -71,8 +71,8 @@ Follow the official Better Auth documentation for installation instructions: htt
 We use DigitalOcean for cloud storage of user profile images.                                  
 The .env file contains the necessary credentials to set up the S3 client and communicate with DigitalOcean’s object storage. Make sure to configure the keys correctly.                                  
 
-To run the program locally: 
-Start the backend express server `cd backend` and `npm run dev`.                              
+To run the program locally:             
+Start the backend express server `cd backend` and `npm run dev`.                                          
 Then start the frontend vite react `cd frontend` and `npm run dev`.                                   
 
 
