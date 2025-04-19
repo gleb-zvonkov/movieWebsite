@@ -1,3 +1,5 @@
+# Movie Website
+
 ## Team Information: 
 One student worked on this project.                                   
 Gleb Zvonkov                                   
@@ -39,19 +41,16 @@ We store the user information in a SQLite database.
 
 
 ## Features: 
-The main features offered are:                                  
-Movie Search Bar: A GPT-powered search bar to help users find movies.                                  
-Scrollable Movie Panel: A dynamic, scrollable panel of movies, each displaying its trailer.                                  
-Authentication Panel and Profile Image Storage: User authentication and profile image storage.                                  
+The main features offered are: A GPT-powered search bar to help users find movies, a dynamic, scrollable panel of movies, each displaying its trailer, and user authentication and profile image storage.                                  
 
 We describe who they fulfill course requirments:                                   
-Tailwind CSS for Styling: Yes, used for responsive and efficient styling.                                  
-shadcn/ui: We appreciate the Skeleton component, which enhances our program’s responsiveness.                                  
-Relational Database: We use SQLite for authentication and to generate movie recommendations.                                  
+Tailwind CSS for Styling: Used for responsive and efficient styling.                                  
+shadcn/ui: Enhances our program’s responsiveness.                                  
+Relational Database: SQLite for authentication and movie reccommendations.                                
 Backend: Express.js server handles backend functionality.                                  
 User Authentication and Authorization: Implemented using Better-Auth.                                  
-Cloud Storage for File Handling: User profile images are stored securely using DigitalOcean.                                  
-API Integration with External Services: We integrate with TMDB, GPT, and YouTube APIs to fetch movie data and provide search capabilities.                                  
+Cloud Storage: User profile images stored using DigitalOcean.                                  
+API Integration with External Services: We integrate with TMDB, GPT, and YouTube APIs. 
 
 
 ## User Guide: 
@@ -73,15 +72,13 @@ Follow the official Better Auth documentation for installation instructions: htt
 We use DigitalOcean for cloud storage of user profile images.                                  
 The .env file contains the necessary credentials to set up the S3 client and communicate with DigitalOcean’s object storage. Make sure to configure the keys correctly.                                  
 
-For local use simple start the backend express server `cd backend` and `npm run dev`.                                  
+To run the program locally: 
+Start the backend express server `cd backend` and `npm run dev`.                              
 Then start the frontend vite react `cd frontend` and `npm run dev`.                                   
 
 
 ## Lessons Learned and Concluding Remarks: 
-We gained valuable experience working with React and deepened our understanding of its ecosystem.                          
-We learned how to set up authentication using Better-Auth, which was crucial for user management and security.                          
-We gained hands-on experience integrating and configuring various APIs, including GPT, TMDB, and YouTube.                          
-Looking ahead, we plan to add more features, such as allowing users to click on a movie to view more detailed information.                          
+We gained valuable experience working with React and deepened our understanding of its ecosystem. We learned how to set up authentication using Better-Auth, which was crucial for user management and security.We gained hands-on experience integrating and configuring various APIs, including GPT, TMDB, and YouTube. Looking ahead, we plan to add more features, such as allowing users to click on a movie to view more detailed information.                          
 
 
 
@@ -121,11 +118,11 @@ movieWebsite/
 │   │   │   ├── useAuth.ts              # Manages authentication state and login/signup logic             
 │   │   │   ├── useInfiniteScroll.ts    # Handles loading more content as user scrolls to bottom                              
 │   │   │   ├── useMovieLoader.ts       # Fetches and manages the movie list (initial + incremental)                           
-│   │   │   └── useYoutubePlayer.ts     # Initializes and tracks YouTube player instances                          
+│   │   │   └── useYoutubePlayer.ts     # Initializes and tracks YouTube player instances                   
 │   │   ├── lib/                        # Utility functions                          
 │   │   │   └── utils.ts
 │   │   ├── parts/                      # Component sections                          
-│   │   │   ├── authenticationCard.tsx  # Card component that toggles between sign in and sign up views        
+│   │   │   ├── authenticationCard.tsx  # Card component that toggles between sign in and sign up views    
 │   │   │   ├── avatar.tsx              # Avatar UI with optional upload or fallback icon       
 │   │   │   ├── movieCard.tsx           # UI card displaying a movie trailer and details    
 │   │   │   ├── signIn.tsx              # Sign-in form for user authentication                          
