@@ -78,7 +78,14 @@ Then start the frontend vite react `cd frontend` and `npm run dev`.
 
 
 ## Lessons Learned and Concluding Remarks: 
-We gained valuable experience working with React and deepened our understanding of its ecosystem. We learned how to set up authentication using Better-Auth, which was crucial for user management and security.We gained hands-on experience integrating and configuring various APIs, including GPT, TMDB, and YouTube. Looking ahead, we plan to add more features, such as allowing users to click on a movie to view more detailed information.                          
+We gained valuable experience working with React and deepened our understanding of its ecosystem. We learned how to set up authentication using Better-Auth, which was crucial for user management and security.We gained hands-on experience integrating and configuring various APIs, including GPT, TMDB, and YouTube. Looking ahead, we plan to add more features, such as allowing users to click on a movie to view more detailed information. 
+
+# Backend API Documentation 
+/api/auth/*splat: Handles authentication requests through Better Auth.
+/api/trending: Fetches and returns trending movie data.
+/api/recommended: Fetches and returns recommended movie data.
+/api/cloud_storage: Handles image uploads to DigitalOcean's cloud storage.
+/api/gpt: Handles requests for GPT-based services.
 
 
 
