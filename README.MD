@@ -18,9 +18,7 @@ We propose developing a personalized movie recommendation system. The basic inte
 Existing solutions include Googling for movie recommendations, which requires explicit input; streaming services, which are limited to their own catalog; and IMDb, which is not designed for personalized recommendations. YouTube generates implicit recommendations, but its primary purpose is not to help users find movies. These limitations highlight the need for a more intuitive and personalized recommendation system.                                  
 
 ## Objectives 
-Develop an interface that dynamically displays movies in a continuous feed.                             Integrate the TMDB API to fetch detailed movie information.                                   
-Utilize the YouTube API to display relevant movie trailers.                                  
-Clean and preprocess a movie dataset to support personalized recommendations.                          Implement a GPT-powered search bar for improved user interaction.                                  Incorporate authentication and authorization features for secure access.                                  
+Develop an interface that dynamically displays movies in a continuous feed. Integrate the TMDB API to fetch detailed movie information. Utilize the YouTube API to display relevant movie trailers. Clean and preprocess a movie dataset to support personalized recommendations.Implement a GPT-powered search bar for improved user interaction. Incorporate authentication and authorization features for secure access.                                  
 
 ## Technical Stack 
 We choose to have a seperate front end and bakend.                                  
@@ -45,13 +43,13 @@ We store the user information in a SQLite database.
 The main features offered are: A GPT-powered search bar to help users find movies, a dynamic, scrollable panel of movies, each displaying its trailer, and user authentication and profile image storage.                                  
 
 We describe who they fulfill course requirments:                                   
-Tailwind CSS for Styling: Used for responsive and efficient styling.                                  
-shadcn/ui: Enhances our program’s responsiveness.                                  
-Relational Database: SQLite for authentication and movie reccommendations.                                
-Backend: Express.js server handles backend functionality.                                  
-User Authentication and Authorization: Implemented using Better-Auth.                                  
-Cloud Storage: User profile images stored using DigitalOcean.                                  
-API Integration with External Services: We integrate with TMDB, GPT, and YouTube APIs. 
+- Tailwind CSS for Styling: Used for responsive and efficient styling.                                  
+- shadcn/ui: Enhances our program’s responsiveness.                                  
+- Relational Database: SQLite for authentication and movie reccommendations.                                
+- Backend: Express.js server handles backend functionality.                                  
+- User Authentication and Authorization: Implemented using Better-Auth.                                  
+- Cloud Storage: User profile images stored using DigitalOcean.                                  
+- API Integration with External Services: We integrate with TMDB, GPT, and YouTube APIs. 
 
 
 ## User Guide 
