@@ -57,7 +57,7 @@ function App() {
   const handleSearch = () => {
     if (searchQuery.trim()) {
       setLoading(true); // Start loading movies during search
-      fetch(`${BACKEND_URL}/api/trending`, {
+      fetch(`${BACKEND_URL}/api/gpt`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
