@@ -82,7 +82,6 @@ export async function getTrendingMovies() {
     options
   );
   const data = await res.json();
-  console.log(data);
   return data.results;
 }
 

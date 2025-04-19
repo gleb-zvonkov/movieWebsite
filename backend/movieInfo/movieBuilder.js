@@ -68,8 +68,6 @@ export async function landingPageMovies() {
   const trending = await getTrendingMovies();
   const topRated = await getTopRatedMovies();
 
-  console.log("Trending movies:", trending);
-
   // Select random ones
   const trendingSample = getRandomItems(trending, 8);
   const topRatedSample = getRandomItems(topRated, 2);
@@ -105,8 +103,6 @@ export async function getRandomPopularMovies() {
   const movieObjects = await Promise.all(
     randomIds.map((id) => createMovieObjectFromID(id))
   );
-
-  console.log(movieObjects);
 
   return movieObjects;
 }
