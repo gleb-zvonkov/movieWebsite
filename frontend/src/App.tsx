@@ -1,5 +1,16 @@
+/**
+ * App.tsx
+ * 
+ * This is the main entry point for the frontend application of the movie website. 
+ * It handles the display and interaction of various components, including:
+ * - Movie grid: Displays a list of trending movies and updates the list when a search is performed.
+ * - Search functionality: Allows the user to search for movies based on a query, sending the query to the backend.
+ * - Login functionality: Opens or closes a login popup when the user's avatar is clicked.
+ * - Infinite scroll: Automatically fetches and adds more movies as the user scrolls to the bottom of the page.
+ **/
+
 import "./App.css";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect} from "react";
 
 // shadcn/ui
 import { Button } from "@/components/ui/button";
@@ -8,25 +19,27 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 // my components
 import AvatarDemo from "@/parts/avatar";
-import LoginCard from "@/parts/loginCard";
-import MovieCard from "@/parts/MovieCard";
+import AuthenticationCard from "@/parts/authenticationCard";
+import MovieCard from "@/parts/movieCard";
 
 // hooks
 import { useYouTubePlayers } from "@/hooks/useYoutubePlayer";
 import { useMovieLoader } from "@/hooks/useMovieLoader";
 import { useInfiniteScroll } from "./hooks/useInfiniteScroll";
 
+//BACKEND Server Url
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 function App() {
   const { movies, setMovies, fetchAndAddMovie } = useMovieLoader(); // Loads and manages the movie list (initial + incremental loading)
-  const [loading, setLoading] = useState(true); // Controls the loading state for the initial movie grid (the initial 8 movies)
+  const [loading, setLoading] = useState(true); // Controls the loading state for both initial movie grid and search results
   const playerRefs = useYouTubePlayers(movies, loading); // Initializes and stores references to YouTube players using movie IDs
   const [showLogin, setShowLogin] = useState(false); // Controls whether the login popup is visible
   const [searchQuery, setSearchQuery] = useState(""); // Tracks the input text for the search
-  const [loadingMovies, setLoadingMovies] = useState(false); // Controls whether movies are loading after input query
 
   // Load trending movies initially
   useEffect(() => {
-    fetch("http://localhost:5050/api/trending")
+    fetch(`${BACKEND_URL}/api/trending`)
       .then((res) => res.json())
       .then((data) => {
         setMovies(data); // once the movies are fetched
@@ -43,8 +56,8 @@ function App() {
   // Function to handle search button click
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      setLoadingMovies(true); // Start loading movies
-      fetch("http://localhost:5050/api/gpt", {
+      setLoading(true); // Start loading movies during search
+      fetch(`${BACKEND_URL}/api/trending`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,17 +67,18 @@ function App() {
         .then((res) => res.json())
         .then((data) => {
           setMovies(data); // Update the movie list with the fetched movies
-          setLoadingMovies(false); // Stop loading state
+          setLoading(false); // Stop loading state once movies are fetched
         })
         .catch((err) => {
           console.error("Error fetching movies from GPT:", err);
-          setLoadingMovies(false); // Stop loading state in case of error
+          setLoading(false); // Stop loading state in case of error
         });
     }
   };
 
   return (
     <div style={{ padding: "20px" }}>
+      {/* Avatar when clicked makes the login popup*/}
       <div
         style={{ position: "absolute", top: "20px", left: "20px", zIndex: 999 }}
       >
@@ -72,7 +86,7 @@ function App() {
       </div>
 
       {/* Login popup: Opens or closes the login card when clicked. */}
-      {showLogin && <LoginCard />}
+      {showLogin && <AuthenticationCard />}
 
       {/* Search Bar */}
       <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
@@ -92,19 +106,7 @@ function App() {
 
       {/* Movie Grid */}
       {/* Shows loading skeletons while movies are loading. */}
-      {loadingMovies ? (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(500px, 1fr))",
-            gap: "16px",
-          }}
-        >
-          {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton key={i} className="w-full h-[300px] rounded-xl" />
-          ))}
-        </div>
-      ) : loading ? (
+      {loading ? (
         <div
           style={{
             display: "grid",

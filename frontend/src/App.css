@@ -50,6 +50,14 @@
   opacity: 0;
 }
 
+.movie-title {
+  opacity: 1;
+}
+
+.video-wrapper:hover .movie-title {
+  opacity: 0; /* Make the title disappear on hover */
+}
+
 .video-wrapper:hover .backdrop-image {
   opacity: 0;
   pointer-events: none; /* So interaction goes to the player */

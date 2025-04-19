@@ -1,13 +1,34 @@
-import express from 'express';
-import cors from 'cors';
-import {
-  landingPageMovies,
-  getRandomPopularMovies
-} from './movieBuilder.js';
+/**
+ * Server setup for handling various movie-related APIs and file uploads.
+ *
+ * This Express app provides the following routes:
+ * - /api/trending: Fetches trending movies using the `trendingMoviesRouter`.
+ * - /api/recommended: Fetches recommended movies using the `recommendedMoviesRouter`.
+ * - /api/cloud_storage: Handles file uploads to DigitalOcean Spaces using `uploadRouter`.
+ * - /api/gpt: Integrates with OpenAI's GPT model for movie recommendations using `gptRouter`.
+ * - /api/auth/*: Handles authentication requests with BetterAuth.
+ *
+ * Middlewares:
+ * - CORS enabled for frontend at http://localhost:5173 with credentials support.
+ * - JSON body parsing with express.json().
+ *
+ * Follows Restful API principles
+ * Stateless
+ * Resources are identified via URIs
+ * Use standard HTTP methods
+ * Use HTTP status codes
+ */
+
+import express from "express";
+import cors from "cors";
+
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
 import { uploadRouter } from "./routes/upload.js";
-import { gptRouter } from "./routes/gptRouter.js";
+import { gptRouter } from "./routes/gpt.js";
+
+import { trendingMoviesRouter } from "./routes/initialMovies.js";
+import { recommendedMoviesRouter } from "./routes/recMovies.js";
 
 const app = express();
 const PORT = 5050;
@@ -19,35 +40,17 @@ app.use(
   })
 );
 
-app.all("/api/auth/*splat", toNodeHandler(auth));   //for better auth 
+app.all("/api/auth/*splat", toNodeHandler(auth)); //for better auth
 
 app.use(express.json()); // automatically parse incoming requests with a Content-Type of application/json
 
-app.use("/api", uploadRouter);  //for upload images to deep ocean
+app.use("/api/trending", trendingMoviesRouter);
 
-app.get('/api/trending', async (req, res) => {
-  try {
-    const movies = await landingPageMovies(); // default is top 10
-    res.json(movies);
-  } catch (error) {
-    console.error('Error fetching trending movies:', error);
-    res.status(500).json({ error: 'Failed to fetch trending movie data' });
-  }
-})
+app.use("/api/recommended", recommendedMoviesRouter);
 
-app.get('/api/one_movie', async (req, res) => {
-  try {
-    const movie = await getRandomPopularMovies(); // default is top 10
-    res.json(movie);
-  } catch (error) {
-    console.error('Error fetching trending movies:', error);
-    res.status(500).json({ error: 'Failed to fetch trending movie data' });
-  }
-})
+app.use("/api/cloud_storage", uploadRouter); //for upload images to deep ocean
 
-app.use("/api", gptRouter);  //for upload images to deep ocean
-
-
+app.use("/api/gpt", gptRouter); //for upload images to deep ocean
 
 //Listen to incoming requests
 app.listen(PORT, () => {
