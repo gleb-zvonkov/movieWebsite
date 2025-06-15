@@ -5,7 +5,7 @@ import path from "path";
 
 
 export default defineConfig({
-  base: '/movieWebsite/',
+  base: '/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
