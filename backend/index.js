@@ -33,6 +33,14 @@ import { recommendedMoviesRouter } from "./routes/recMovies.js";
 const app = express();
 const PORT = 5050;
 
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173",
+//     credentials: true,
+//   })
+// );
+
+
 app.use(
   cors({
     origin: function (origin, callback) {
