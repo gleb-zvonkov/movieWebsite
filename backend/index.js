@@ -49,7 +49,7 @@ app.use(
         "https://coralwindow.ca",
         "https://gleb-zvonkov.github.io",
         "http://thecine.ca",
-        "https://thecine.ca",
+        "https://thecine.ca"
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
