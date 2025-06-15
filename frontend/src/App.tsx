@@ -33,6 +33,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 function App() {
   const { movies, setMovies, fetchAndAddMovie } = useMovieLoader(); // Loads and manages the movie list (initial + incremental loading)
   const [loading, setLoading] = useState(true); // Controls the loading state for both initial movie grid and search results
+  const [showDelayedMessage, setShowDelayedMessage] = useState(false);   //controls the visibility of server statup message 
   const playerRefs = useYouTubePlayers(movies, loading); // Initializes and stores references to YouTube players using movie IDs
   const [showLogin, setShowLogin] = useState(false); // Controls whether the login popup is visible
   const [searchQuery, setSearchQuery] = useState(""); // Tracks the input text for the search
@@ -50,6 +51,22 @@ function App() {
         setLoading(false);
       });
   }, []);
+
+  // Show delayed message if the loading state persists for more than 5 seconds
+  useEffect(() => {
+    let timer: number;
+
+    if (loading) {
+      timer = window.setTimeout(() => {
+        setShowDelayedMessage(true);
+      }, 5000); // 5 seconds
+    } else {
+      setShowDelayedMessage(false);
+    }
+
+    return () => clearTimeout(timer);
+  }, [loading]);
+
 
   useInfiniteScroll(fetchAndAddMovie); // Attaches a scroll listener and loads a new movie from the backend when the user nears the bottom of the page.
 
@@ -107,16 +124,36 @@ function App() {
       {/* Movie Grid */}
       {/* Shows loading skeletons while movies are loading. */}
       {loading ? (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(500px, 1fr))",
-            gap: "16px",
-          }}
-        >
-          {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton key={i} className="w-full h-[300px] rounded-xl" />
-          ))}
+        <div>
+
+          {showDelayedMessage && (
+            <div
+              style={{
+                marginBottom: "16px",
+                padding: "12px",
+                backgroundColor: "#f8d7da", // light red
+                border: "1px solid #f5c2c7", // slightly darker red border
+                borderRadius: "8px",
+                color: "#000000", // black text
+                fontSize: "16px",
+              }}
+            >
+              Waking up the server... This may take up to 60 seconds on first
+              load.
+            </div>
+          )}
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(500px, 1fr))",
+              gap: "16px",
+            }}
+          >
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} className="w-full h-[300px] rounded-xl" />
+            ))}
+          </div>
         </div>
       ) : (
         <div

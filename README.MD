@@ -153,3 +153,15 @@ movieWebsite/
 ├── package.json                        # Project metadata and scripts                          
 ├── package-lock.json                   # Dependency lock file                          
 └── README.md                           # Project documentation                          
+
+
+
+## Pushing to Github Pages
+Commit and push changes as usual. 
+`git add .`
+`git commit -m "Update site"`
+`git push origin main`
+Then deploy to github pages. 
+`npm run deploy`
+This will run npm run build and push the /dist folder (production ready version). 
+Github will automatically server the updated site. 
