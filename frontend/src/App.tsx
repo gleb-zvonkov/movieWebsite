@@ -10,7 +10,7 @@
  **/
 
 import "./App.css";
-import { useState, useEffect} from "react";
+import { useState, useEffect, useRef} from "react";
 
 // shadcn/ui
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,7 @@ function App() {
   const { movies, setMovies, fetchAndAddMovie } = useMovieLoader(); // Loads and manages the movie list (initial + incremental loading)
   const [loading, setLoading] = useState(true); // Controls the loading state for both initial movie grid and search results
   const [showDelayedMessage, setShowDelayedMessage] = useState(false);   //controls the visibility of server statup message 
+  const isInitialLoad = useRef(true);  //track wether this is intial load or not
   const playerRefs = useYouTubePlayers(movies, loading); // Initializes and stores references to YouTube players using movie IDs
   const [showLogin, setShowLogin] = useState(false); // Controls whether the login popup is visible
   const [searchQuery, setSearchQuery] = useState(""); // Tracks the input text for the search
@@ -56,12 +57,15 @@ function App() {
   useEffect(() => {
     let timer: number;
 
-    if (loading) {
+    if (loading && isInitialLoad.current) {
       timer = window.setTimeout(() => {
         setShowDelayedMessage(true);
-      }, 5000); // 5 seconds
-    } else {
+      }, 5000);
+    }
+
+    if (!loading) {
       setShowDelayedMessage(false);
+      isInitialLoad.current = false; // Prevent future triggers
     }
 
     return () => clearTimeout(timer);
